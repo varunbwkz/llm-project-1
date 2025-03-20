@@ -1,0 +1,17 @@
+# System files
+.DS_Store
+
+# Database
+chroma_db/
+*.db
+
+# Environment
+.env
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.class

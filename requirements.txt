@@ -1,0 +1,29 @@
+openai 
+torch
+langchain
+langchain_openai
+transformers
+chromadb
+streamlit
+pypdf2
+langchain_community
+langchain_chroma
+faiss-cpu
+unstructured
+selenium
+newspaper3k
+lxml-html-clean 
+langchain-ollama
+yt_dlp
+
+# cohere
+cohere
+sentence-transformers
+
+# for LoRa
+datasets 
+peft 
+evaluate
+fastapi
+uvicorn
+prettytable
