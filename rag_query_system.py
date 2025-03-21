@@ -435,7 +435,7 @@ class TheRAGSystem:
 
 
 def main():
-    st.title("🤖 Brandworkz RAG System")
+    st.title("🤖 Enhanced RAG System")
 
     # I keep track of important stuff between page refreshes using session state
     if "processed_files" not in st.session_state:
@@ -536,7 +536,7 @@ def main():
         
         # Show the list of uploaded documents
         if source_list:
-            st.subheader("📚 Document List")
+            st.subheader("📚 List of Uploaded Documents")
             for i, source in enumerate(source_list, 1):
                 st.markdown(f"**{i}. {source}**")
 
@@ -708,24 +708,49 @@ def main():
                 # Direct Answer Section
                 st.markdown('<div class="answer-section">', unsafe_allow_html=True)
                 st.markdown('<div class="section-title">📌 Direct Answer</div>', unsafe_allow_html=True)
-                direct_answer = st.session_state.current_response["response"].split("DETAILED EXPLANATION:")[0].replace("DIRECT ANSWER:", "").strip()
+                try:
+                    if "DIRECT ANSWER:" in st.session_state.current_response["response"]:
+                        direct_answer = st.session_state.current_response["response"].split("DIRECT ANSWER:")[1].split("DETAILED EXPLANATION:")[0].strip()
+                    else:
+                        # Fallback if format is different
+                        direct_answer = st.session_state.current_response["response"].split("\n\n")[0].strip()
+                except IndexError:
+                    direct_answer = st.session_state.current_response["response"].strip()
                 st.markdown(f"{direct_answer}", unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
                 
                 # Detailed Explanation Section
                 st.markdown('<div class="answer-section">', unsafe_allow_html=True)
                 st.markdown('<div class="section-title">📝 Detailed Explanation</div>', unsafe_allow_html=True)
-                detailed_explanation = st.session_state.current_response["response"].split("DETAILED EXPLANATION:")[1].split("KEY POINTS:")[0].strip()
+                try:
+                    if "DETAILED EXPLANATION:" in st.session_state.current_response["response"] and "KEY POINTS:" in st.session_state.current_response["response"]:
+                        detailed_explanation = st.session_state.current_response["response"].split("DETAILED EXPLANATION:")[1].split("KEY POINTS:")[0].strip()
+                    elif "DETAILED EXPLANATION:" in st.session_state.current_response["response"]:
+                        # If KEY POINTS section is missing
+                        detailed_explanation = st.session_state.current_response["response"].split("DETAILED EXPLANATION:")[1].strip()
+                    else:
+                        # Fallback if format is different
+                        parts = st.session_state.current_response["response"].split("\n\n")
+                        detailed_explanation = "\n\n".join(parts[1:-1]) if len(parts) > 2 else st.session_state.current_response["response"]
+                except IndexError:
+                    detailed_explanation = "Error parsing the detailed explanation section."
                 st.markdown(f"{detailed_explanation}", unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
                 
                 # Key Points Section
                 st.markdown('<div class="answer-section">', unsafe_allow_html=True)
                 st.markdown('<div class="section-title">🔑 Key Points</div>', unsafe_allow_html=True)
-                key_points = st.session_state.current_response["response"].split("KEY POINTS:")[1].strip()
-                for point in key_points.split("\n"):
-                    if point.strip() and point.strip() != "-":
-                        st.markdown(f'<div class="key-point">{point.strip().replace("- ", "")}</div>', unsafe_allow_html=True)
+                try:
+                    if "KEY POINTS:" in st.session_state.current_response["response"]:
+                        key_points = st.session_state.current_response["response"].split("KEY POINTS:")[1].strip()
+                        for point in key_points.split("\n"):
+                            if point.strip() and point.strip() != "-":
+                                st.markdown(f'<div class="key-point">{point.strip().replace("- ", "")}</div>', unsafe_allow_html=True)
+                    else:
+                        # Fallback if KEY POINTS section is missing
+                        st.markdown('<div class="key-point">Key points not provided in this response format.</div>', unsafe_allow_html=True)
+                except IndexError:
+                    st.markdown('<div class="key-point">Error parsing the key points section.</div>', unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
                 
                 st.markdown('</div>', unsafe_allow_html=True)

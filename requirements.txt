@@ -1,29 +1,5 @@
-openai 
-torch
-langchain
-langchain_openai
-transformers
-chromadb
-streamlit
-pypdf2
-langchain_community
-langchain_chroma
-faiss-cpu
-unstructured
-selenium
-newspaper3k
-lxml-html-clean 
-langchain-ollama
-yt_dlp
-
-# cohere
-cohere
-sentence-transformers
-
-# for LoRa
-datasets 
-peft 
-evaluate
-fastapi
-uvicorn
-prettytable
+streamlit>=1.27.0
+chromadb>=0.4.18
+openai>=1.3.0
+python-dotenv>=1.0.0
+PyPDF2>=3.0.0
