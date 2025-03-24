@@ -10,6 +10,8 @@ chroma_db/
 venv/
 env/
 .venv/
+.streamlit/
+
 
 # Python
 __pycache__/

@@ -13,10 +13,12 @@ A powerful Retrieval-Augmented Generation (RAG) system that allows you to upload
 - **Document Management**: Add or remove documents as needed
 - **Query History**: Review previous questions and answers
 - **Advanced Settings**: Customize chunk size, overlap, and temperature for optimal results
+- **API Access**: Query the system programmatically via REST API endpoints
 
 ## 🔧 Technologies Used
 
 - **Frontend**: Streamlit
+- **API Server**: FastAPI
 - **Vector Database**: ChromaDB
 - **Embedding Model**: OpenAI's text-embedding-3-small
 - **LLM**: OpenAI's GPT-4o-mini
@@ -43,16 +45,26 @@ A powerful Retrieval-Augmented Generation (RAG) system that allows you to upload
    ```
 
 3. **Install dependencies**:
+   
+   For Streamlit interface:
    ```bash
    pip install -r requirements.txt
+   ```
+   
+   For API server:
+   ```bash
+   pip install -r requirements_api.txt
    ```
 
 4. **Create a `.env` file** in the root directory with your OpenAI API key:
    ```
    OPENAI_API_KEY=your_api_key_here
+   API_PORT=8000  # Optional: customize the API port (default: 8000)
    ```
 
 ## 🏃‍♂️ Usage
+
+### Streamlit Web Interface
 
 1. **Start the application**:
    ```bash
@@ -78,6 +90,37 @@ A powerful Retrieval-Augmented Generation (RAG) system that allows you to upload
      - **Detailed Explanation**: In-depth analysis with supporting evidence
      - **Key Points**: Important takeaways from the documents
    - Click "View Source Passages" to see the exact document sections used to generate the answer
+
+### API Server
+
+1. **Start the API server**:
+   ```bash
+   python api_server.py
+   ```
+   The server will run on http://localhost:8000 by default.
+
+2. **View API documentation**:
+   Open http://localhost:8000/docs in your browser to see the interactive API documentation.
+
+3. **API Endpoints**:
+
+   - `GET /` - Check if the API is running
+   - `GET /documents` - List all documents in the system
+   - `POST /query` - Query the documents with natural language
+   - `GET /info` - Get information about the models being used
+
+4. **Example API Request**:
+   ```bash
+   curl -X 'POST' \
+     'http://localhost:8000/query' \
+     -H 'accept: application/json' \
+     -H 'Content-Type: application/json' \
+     -d '{
+     "query": "What is the main topic of the document?",
+     "n_results": 3,
+     "temperature": 0.7
+   }'
+   ```
 
 ## ⚙️ Configuration Options
 
@@ -125,8 +168,10 @@ This application implements a RAG (Retrieval-Augmented Generation) architecture:
 
 ```
 enhanced-rag-system/
-├── rag_query_system.py        # Main application file
-├── requirements.txt           # Project dependencies
+├── rag_query_system.py        # Main application file (Streamlit UI)
+├── api_server.py              # API server (FastAPI)
+├── requirements.txt           # Dependencies for Streamlit UI
+├── requirements_api.txt       # Dependencies for API server
 ├── .env                       # Environment variables (API keys)
 ├── .gitignore                 # Git ignore file
 ├── README.md                  # Project documentation
@@ -158,6 +203,80 @@ enhanced-rag-system/
 4. **ChromaDB Errors**:
    - If the database becomes corrupted, delete the `chroma_db` directory and restart
 
+5. **API Server Issues**:
+   - Ensure the required dependencies are installed
+   - Check that the port is not already in use
+   - Look for error messages in the terminal where the server is running
+
+## Using the API in Client Applications
+
+To integrate with the RAG System API in your applications:
+
+### JavaScript Example
+
+```javascript
+async function queryDocuments(question) {
+  const response = await fetch('http://localhost:8000/query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: question,
+      n_results: 3,
+      temperature: 0.7
+    }),
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Error: ${response.status}`);
+  }
+  
+  return await response.json();
+}
+
+// Usage
+queryDocuments("What is the main topic of the document?")
+  .then(data => {
+    console.log("Direct Answer:", data.direct_answer);
+    console.log("Detailed Explanation:", data.detailed_explanation);
+    console.log("Key Points:", data.key_points);
+    console.log("Sources:", data.sources);
+  })
+  .catch(error => console.error("Error:", error));
+```
+
+### Python Example
+
+```python
+import requests
+
+def query_documents(question, n_results=3, temperature=0.7):
+    response = requests.post(
+        "http://localhost:8000/query",
+        json={
+            "query": question,
+            "n_results": n_results,
+            "temperature": temperature
+        }
+    )
+    
+    if response.status_code != 200:
+        raise Exception(f"Error: {response.status_code} - {response.text}")
+        
+    return response.json()
+
+# Usage
+try:
+    result = query_documents("What is the main topic of the document?")
+    print("Direct Answer:", result["direct_answer"])
+    print("Detailed Explanation:", result["detailed_explanation"])
+    print("Key Points:", result["key_points"])
+    print("Sources:", result["sources"])
+except Exception as e:
+    print("Error:", str(e))
+```
+
 ## 🛠️ Advanced Customization
 
 For developers looking to extend or modify the system:
@@ -171,6 +290,10 @@ For developers looking to extend or modify the system:
 3. **Prompt Engineering**:
    - The prompt template in the `generate_response` method can be adjusted to change response style or format
 
+4. **Extending the API**:
+   - Add new endpoints to the `api_server.py` file to expose additional functionality
+   - Customize response formats or add authentication as needed
+
 ## 🔮 Future Enhancements
 
 Potential improvements for future versions:
@@ -181,7 +304,9 @@ Potential improvements for future versions:
 - Custom knowledge bases and persistent user profiles
 - Improved document preprocessing and cleaning
 - Advanced RAG techniques like reranking and query expansion
+- Authentication and rate limiting for the API
+- Batch document upload via API
 
 ---
 
-For any queries, please reaach out to me directly. Cheers!
+For any queries, please reach out to me directly. Cheers!
