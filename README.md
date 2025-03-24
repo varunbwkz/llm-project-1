@@ -197,7 +197,7 @@ enhanced-rag-system/
    - Try converting problematic PDFs to a different format and re-uploading
 
 3. **Memory Issues with Large Documents**:
-   - The system uses batch processing, but very large PDFs may cause memory issues
+   - The system uses batch processing, but very large PDFs may cause memory issues.. **To be fair, i have tested with 1 document containing > 3700 pages and it still worked fine !!**
    - Consider splitting very large documents into smaller files
 
 4. **ChromaDB Errors**:
