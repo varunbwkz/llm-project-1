@@ -1,0 +1,7 @@
+# knowledge_urls.txt
+# Format: Display Name | URL
+Downloading Assets | https://brandworkz.freshdesk.com/support/solutions/articles/80000881124-downloading-assets
+Uploading Assets | https://brandworkz.freshdesk.com/support/solutions/articles/80000881255-uploading-assets
+Download Forms | https://brandworkz.freshdesk.com/support/solutions/articles/80001155937-download-forms
+Sharing Assets | https://brandworkz.freshdesk.com/support/solutions/articles/80000883570-sharing-assets
+# Add more URLs here following the 'Name | URL' format
